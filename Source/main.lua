@@ -7,6 +7,7 @@ import 'text'
 
 ---- initialisation
 local currentMode = 'draw text'
+
 -- todo move to dedicated place related to text/draw logic
 local textFullyDrawn = false
 local text = ''
@@ -43,6 +44,7 @@ function playdate.update()
    local newTextLine = handleContiniousInput(textLine)
    if newTextLine ~= textLine then 
       textLine = newTextLine
+      needRefresh = true
    end
 
     
@@ -56,11 +58,9 @@ function handleContiniousInput(textLine)
    
    if playdate.buttonIsPressed(playdate.kButtonUp) or (crankMoved and crankChange < 0) then
       textLine -= 1
-      needRefresh = true
    end
    if playdate.buttonIsPressed(playdate.kButtonDown) or (crankMoved and crankChange > 0) then
        textLine += 1
-       needRefresh = true
    end
    
    -- todo should not depend on view logic, refactor
