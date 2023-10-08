@@ -1,49 +1,41 @@
-width, height = playdate.display.getSize()
+-- width, height = playdate.display.getSize()
 
 linesPerScreen = 11
-lineHeight = 22
-needRefresh = true
-
-crankStepPerLine = 7
 extraScrollLines = 4
 
-local text = 'empty'
-local textLine = 1
+local lineHeight = 22
 
-function drawText(input)
-	text = splitLines(input)
-	
-	if needRefresh then
-		gfx.clear()
+function drawText(text, textLine)
+	gfx.clear()
 		
-		local screenLine = 1
-		while screenLine <= linesPerScreen do
-			if textLine+screenLine <= #text then
-				line = text[textLine]
-				local x = 2
-				local y = (screenLine-1)*lineHeight
+	local screenLine = 1
+	while screenLine <= linesPerScreen do
+		if textLine <= #text then
+			line = text[textLine]
+			local x = 2
+			local y = (screenLine-1)*lineHeight
 				
-				printedLength, printedHeight = gfx.drawTextInRect(line, x, y, 400, 240) 
-				-- printedLength, printedHeight = gfx.drawText(line, x, y) 
+			printedLength, printedHeight = gfx.drawTextInRect(line, x, y, 400, 240) 
+			-- printedLength, printedHeight = gfx.drawText(line, x, y) 
 				
-				if printedHeight > lineHeight then
-					screenLine += printedHeight //= lineHeight - 1
-				end
+			-- if more than 1 line were drawn, ideally shouldn't happen ever, get rid of this logic?
+			if printedHeight > lineHeight then
+				screenLine += printedHeight //= lineHeight - 1
 			end
-			
-			textLine += 1
-			screenLine += 1
 		end
-		needRefresh = false  
-		playdate.display.flush()
-	end 
+			
+		textLine += 1
+		screenLine += 1
+	end
 	
-	return textLine
+	playdate.display.flush()
+	
+	return textLine >= #text
 end
 
 
 -- todo implement
-function splitLines(input)
+function prepareTextForDraw(input)
 	return input
 	
 	-- local result = {}
