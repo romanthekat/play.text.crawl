@@ -6,15 +6,17 @@ import 'files'
 import 'text'
 
 ---- initialisation
+local currentMode = 'draw text'
+-- todo move to dedicated place related to text/draw logic
+local textFullyDrawn = false
+local text = ''
+local textLine = 1
+
 -- view
 gfx = playdate.graphics
 font = gfx.font.new('fonts/Roobert/Roobert-11-Medium-table-22-22.png')   
 local needRefresh = true
 local crankStepPerLine = 7
-
--- todo move to dedicated place
-local text = ''
-local textLine = 1
 
 -- code
 gfx.setColor(gfx.kColorWhite)
@@ -22,6 +24,7 @@ gfx.setFont(font)
 ---- initialisation finished
 
 
+-- todo remove after tests
 local contentRead = false
 function playdate.update() 
    playdate.drawFPS(385, 0) 
@@ -29,16 +32,16 @@ function playdate.update()
    if not contentRead then
       content = readFileContent('test 1.txt')
       text = prepareTextForDraw(content)
+      contentRead = true
    end
 
-   local fullyDrawn = false
    if needRefresh then
-      fullyDrawn = drawText(text, textLine)
+      textFullyDrawn = drawText(text, textLine)
+      needRefresh = false
    end
-   needRefresh = false
+   
    local newTextLine = handleContiniousInput(textLine)
    if newTextLine ~= textLine then 
-      print('text line=' .. textLine) 
       textLine = newTextLine
    end
 
