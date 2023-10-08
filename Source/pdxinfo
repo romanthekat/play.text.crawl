@@ -1,0 +1,7 @@
+name=play.text.crawl
+author=RomanTheKat
+description=Simple roguelike with textual interface play.date
+bundleID=net.romangaranin.play.text.crawl
+version=1.0
+buildNumber=100
+imagePath=SystemAssets
