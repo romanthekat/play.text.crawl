@@ -34,7 +34,7 @@ function drawText(text, lineNumber)
 	return lineNumber >= #text
 end
 
-local function isFitScreen(line)
+local function fitsScreen(line)
 	width, height = gfx.getTextSize(line)
 	return width <= screenWidth
 end
@@ -54,7 +54,7 @@ local function splitLineToFitScreen(line)
 	  currentLine = currentLine .. " "
 	end
 
-	if isFitScreen(currentLine .. word) then
+	if fitsScreen(currentLine .. word) then
 	  currentLine = currentLine .. word
 	else
 	  table.insert(lines, currentLine)
