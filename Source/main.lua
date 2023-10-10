@@ -1,9 +1,11 @@
--- import "CoreLibs/object"
+import "CoreLibs/object"
 import "CoreLibs/graphics"
 -- import "CoreLibs/timer"
 import 'CoreLibs/ui/gridview.lua'
 import 'files'
 import 'text'
+import 'locations'
+import 'actors'
 
 ---- initialisation
 local currentMode = 'draw text'
@@ -11,7 +13,7 @@ local currentMode = 'draw text'
 -- todo move to dedicated place related to text/draw logic
 local textFullyDrawn = false
 local text = ''
-local textLine = 1
+local lineNumber = 1
 
 -- view
 gfx = playdate.graphics
@@ -22,6 +24,8 @@ local crankStepPerLine = 7
 -- code
 gfx.setColor(gfx.kColorWhite)
 gfx.setFont(font)
+
+-- math.randomseed(playdate.getSecondsSinceEpoch())
 ---- initialisation finished
 
 
@@ -37,13 +41,13 @@ function playdate.update()
    end
 
    if needRefresh then
-      textFullyDrawn = drawText(text, textLine)
+      textFullyDrawn = drawText(text, lineNumber)
       needRefresh = false
    end
    
-   local newTextLine = handleContiniousInput(textLine)
-   if newTextLine ~= textLine then 
-      textLine = newTextLine
+   local newLineNumber = handleContiniousInput(lineNumber)
+   if newLineNumber ~= lineNumber then 
+      lineNumber = newLineNumber
       needRefresh = true
    end
 
@@ -52,26 +56,26 @@ function playdate.update()
     -- playdate.timer.updateTimers()
 end
 
-function handleContiniousInput(textLine)
+function handleContiniousInput(lineNumber)
    local crankChange = playdate.getCrankChange() 
    local crankMoved = math.abs(crankChange) > crankStepPerLine
    
    if playdate.buttonIsPressed(playdate.kButtonUp) or (crankMoved and crankChange < 0) then
-      textLine -= 1
+      lineNumber -= 1
    end
    if playdate.buttonIsPressed(playdate.kButtonDown) or (crankMoved and crankChange > 0) then
-       textLine += 1
+       lineNumber += 1
    end
    
    -- todo should not depend on view logic, refactor
-   if textLine > #content - linesPerScreen + extraScrollLines then
-       textLine = #content - linesPerScreen + extraScrollLines
+   if lineNumber > #content - linesPerScreen + extraScrollLines then
+       lineNumber = #content - linesPerScreen + extraScrollLines
    end
-   if textLine <= 0 then
-       textLine = 1
+   if lineNumber <= 0 then
+       lineNumber = 1
    end	 
    
-   return textLine
+   return lineNumber
 end
 
 function playdate.upButtonUp()
